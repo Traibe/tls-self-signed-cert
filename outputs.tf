@@ -23,11 +23,11 @@ file permissions updated appropriately.
   $ openssl x509 -text -in ${element(concat(formatlist("%s-leaf.crt.pem", random_id.name.*.hex), list("")), 0)}
 
   # Verify root CA
-  $ openssl verify -CAfile ${element(concat(formatlist("%s-ca.crt.pem", random_id.name.*.hex), list("")), 0)} \\
-    ${element(concat(formatlist("%s-leaf.crt.pem", random_id.name.*.hex), list("")), 0)}
+  $ openssl verify -CAfile ${element(concat(formatlist("%s-ca.crt.pem", random_id.name.*.hex), list("")), 0)} ${element(concat(formatlist("%s-leaf.crt.pem", random_id.name.*.hex), list("")), 0)}
 INNER
 :
-"Certs were not downloaded locally. set 'download_certs' to true to download."}
+Certs were not downloaded locally. set 'download_certs' to true to download.
+}
 README
 }
 
