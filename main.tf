@@ -66,7 +66,7 @@ resource "tls_locally_signed_cert" "leaf" {
   ca_cert_pem        = var.ca_cert_override == "" ? element(concat(tls_self_signed_cert.ca.*.cert_pem, list("")), 0) : var.ca_cert_override
 
   validity_period_hours = var.validity_period_hours
-  allowed_uses          = [var.allowed_uses]
+  allowed_uses          = var.allowed_uses
 }
 
 resource "null_resource" "download_ca_cert" {
