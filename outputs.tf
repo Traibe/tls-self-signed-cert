@@ -9,10 +9,8 @@ The below private keys and self signed TLS certificates have been generated.
 - CA certificate: ${element(concat(formatlist("%s-ca", random_id.name.*.hex), list("")), 0)}
 - Leaf certificate: ${element(concat(formatlist("%s-leaf", random_id.name.*.hex), list("")), 0)}
 
-${var.download_certs ?
-<<-INNER
-The below certificates and private key have been downloaded locally with the
-file permissions updated appropriately.
+${var.download_certs ? <<-INNERA
+The below certificates and private key have been downloaded locally with the file permissions updated appropriately.
 
 - ${element(concat(formatlist("%s-ca.crt.pem", random_id.name.*.hex), list("")), 0)}
 - ${element(concat(formatlist("%s-leaf.crt.pem", random_id.name.*.hex), list("")), 0)}
@@ -24,9 +22,11 @@ file permissions updated appropriately.
 
   # Verify root CA
   $ openssl verify -CAfile ${element(concat(formatlist("%s-ca.crt.pem", random_id.name.*.hex), list("")), 0)} ${element(concat(formatlist("%s-leaf.crt.pem", random_id.name.*.hex), list("")), 0)}
-INNER
+INNERA
 :
+<<-INNERB
 Certs were not downloaded locally. set 'download_certs' to true to download.
+INNERB
 }
 README
 }
