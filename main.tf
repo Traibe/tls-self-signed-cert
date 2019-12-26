@@ -83,7 +83,7 @@ resource "null_resource" "download_leaf_cert" {
 
   # Write the PEM-encoded certificate public key to this path (e.g. /etc/tls/leaf.crt.pem).
   provisioner "local-exec" {
-    command = "echo '${chomp(tls_locally_signed_cert.leaf.cert_pem)}' > ${format("%s-leaf.crt.pem", random_id.name.hex)} && chmod ${var.permissions} '${format("%s-leaf.crt.pem", random_id.name.hex)}'"
+    command = "echo '${chomp(tls_locally_signed_cert.leaf[count.index].cert_pem)}' > ${format("%s-leaf.crt.pem", random_id.name[count.index].hex)} && chmod ${var.permissions} '${format("%s-leaf.crt.pem", random_id.name[count.index].hex)}'"
   }
 }
 
