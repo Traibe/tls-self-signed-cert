@@ -25,7 +25,7 @@ resource "tls_self_signed_cert" "ca" {
   is_ca_certificate = true
 
   validity_period_hours = var.validity_period_hours
-  allowed_uses          = [var.ca_allowed_uses]
+  allowed_uses          = var.ca_allowed_uses
 
   subject {
     common_name  = var.ca_common_name
@@ -47,8 +47,8 @@ resource "tls_cert_request" "leaf" {
   key_algorithm   = tls_private_key.leaf[count.index].algorithm
   private_key_pem = tls_private_key.leaf[count.index].private_key_pem
 
-  dns_names    = [var.dns_names]
-  ip_addresses = [var.ip_addresses]
+  dns_names    = var.dns_names
+  ip_addresses = var.ip_addresses
 
   subject {
     common_name  = var.common_name
@@ -92,6 +92,6 @@ resource "null_resource" "download_leaf_private_key" {
 
   # Write the PEM-encoded leaf certificate private key to this path (e.g. /etc/tls/leaf.key.pem).
   provisioner "local-exec" {
-    command = "echo '${chomp(tls_private_key.leaf[count.index].private_key_pem)}' > ${format("%s-leaf.key.pem", random_id.name[count.index].hex)} && chmod ${var.permissions} '${format("%s-leaf.key.pem", random_id.name.hex)}'"
+    command = "echo '${chomp(tls_private_key.leaf[count.index].private_key_pem)}' > ${format("%s-leaf.key.pem", random_id.name[count.index].hex)} && chmod ${var.permissions} '${format("%s-leaf.key.pem", random_id.name[count.index].hex)}'"
   }
 }
