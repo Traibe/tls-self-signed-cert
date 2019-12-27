@@ -3,14 +3,14 @@ terraform {
 }
 
 resource "random_id" "name" {
-  count = var.create ? 1 : 0
+  count = var.create == true ? 1 : 0
 
   byte_length = 4
   prefix      = "${var.name}-"
 }
 
 resource "tls_private_key" "ca" {
-  count = var.create && !var.ca_override ? 1 : 0
+  count = var.create == true && var.ca_override == false ? 1 : 0
 
   algorithm   = var.algorithm
   ecdsa_curve = var.ecdsa_curve
@@ -18,7 +18,7 @@ resource "tls_private_key" "ca" {
 }
 
 resource "tls_self_signed_cert" "ca" {
-  count = var.create && !var.ca_override ? 1 : 0
+  count = var.create == true && var.ca_override == false ? 1 : 0
 
   key_algorithm     = tls_private_key.ca[count.index].algorithm
   private_key_pem   = var.ca_key_override == "" ? tls_private_key.ca[count.index].private_key_pem : var.ca_key_override
@@ -34,7 +34,7 @@ resource "tls_self_signed_cert" "ca" {
 }
 
 resource "tls_private_key" "leaf" {
-  count = var.create ? 1 : 0
+  count = var.create == true ? 1 : 0
 
   algorithm   = var.algorithm
   ecdsa_curve = var.ecdsa_curve
@@ -42,7 +42,7 @@ resource "tls_private_key" "leaf" {
 }
 
 resource "tls_cert_request" "leaf" {
-  count = "${var.create ? 1 : 0}"
+  count = var.create == true ? 1 : 0
 
   key_algorithm   = tls_private_key.leaf[count.index].algorithm
   private_key_pem = tls_private_key.leaf[count.index].private_key_pem
@@ -57,7 +57,7 @@ resource "tls_cert_request" "leaf" {
 }
 
 resource "tls_locally_signed_cert" "leaf" {
-  count = var.create ? 1 : 0
+  count = var.create == true ? 1 : 0
 
   cert_request_pem = tls_cert_request.leaf[count.index].cert_request_pem
 
@@ -70,7 +70,7 @@ resource "tls_locally_signed_cert" "leaf" {
 }
 
 resource "null_resource" "download_ca_cert" {
-  count = var.create && var.download_certs ? 1 : 0
+  count = var.create == true && var.download_certs == true ? 1 : 0
 
   # Write the PEM-encoded CA certificate public key to this path (e.g. /etc/tls/ca.crt.pem).
   provisioner "local-exec" {
@@ -79,7 +79,7 @@ resource "null_resource" "download_ca_cert" {
 }
 
 resource "null_resource" "download_leaf_cert" {
-  count = var.create && var.download_certs ? 1 : 0
+  count = var.create == true && var.download_certs == true ? 1 : 0
 
   # Write the PEM-encoded certificate public key to this path (e.g. /etc/tls/leaf.crt.pem).
   provisioner "local-exec" {
@@ -88,7 +88,7 @@ resource "null_resource" "download_leaf_cert" {
 }
 
 resource "null_resource" "download_leaf_private_key" {
-  count = var.create && var.download_certs ? 1 : 0
+  count = var.create == true && var.download_certs == true ? 1 : 0
 
   # Write the PEM-encoded leaf certificate private key to this path (e.g. /etc/tls/leaf.key.pem).
   provisioner "local-exec" {
